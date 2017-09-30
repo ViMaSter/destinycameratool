@@ -5,8 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ps4remotehack"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150.617" Width="283.642">
+        Title="MainWindow" Height="357.733" Width="507.642">
     <Grid>
+        <Button x:Name="ButtonX" Content="Do X" HorizontalAlignment="Left" Margin="42,63,0,0" VerticalAlignment="Top" Width="75" MouseDown="ButtonX_Down" MouseUp="ButtonX_Up" RenderTransformOrigin="0.961,0.58"/>
+        <Button Content="Do Square" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="75" MouseDown="Square_Down" MouseUp="Square_Up"/>
+        <Button Content="Do Triangle" HorizontalAlignment="Left" Margin="42,13,0,0" VerticalAlignment="Top" Width="75" MouseDown="Triangle_Down" MouseUp="Triangle_Up"/>
+        
+        <Label Content="LX&#xA;" HorizontalAlignment="Left" Margin="0,85,0,0" VerticalAlignment="Top" Height="24"/>
+
+        <Label Content="LY&#xA;" HorizontalAlignment="Left" Margin="452,-4,0,0" VerticalAlignment="Top" Height="24"/>
+
+        <Label Content="RX&#xA;" HorizontalAlignment="Left" Margin="0,114,0,0" VerticalAlignment="Top" Height="24"/>
+
+        <Label Content="RY&#xA;" HorizontalAlignment="Left" Margin="474,-4,0,0" VerticalAlignment="Top" Height="24"/>
+
+        <Slider x:Name="LX" HorizontalAlignment="Left" Margin="23,88,0,0" VerticalAlignment="Top" Width="415" Maximum="255" Value="128" ValueChanged="LX_ValueChanged" MouseDoubleClick="LX_Reset"/>
+        <Slider x:Name="RX" HorizontalAlignment="Left" Margin="24,120,0,0" VerticalAlignment="Top" Width="414" Maximum="255" Value="128" ValueChanged="RX_ValueChanged" MouseDoubleClick="RX_Reset"/>
+        <Slider x:Name="LY" HorizontalAlignment="Left" Margin="453,18,0,0" VerticalAlignment="Top" Width="16" RenderTransformOrigin="0.5,0.5" Orientation="Vertical" Height="299" Maximum="255" Value="128" ValueChanged="LY_ValueChanged" MouseDoubleClick="LY_Reset"/>
+        <Slider x:Name="RY" HorizontalAlignment="Left" Margin="474,18,0,0" VerticalAlignment="Top" Width="16" RenderTransformOrigin="0.5,0.5" Orientation="Vertical" Height="299" Maximum="255" Value="128" ValueChanged="RY_ValueChanged" MouseDoubleClick="RY_Reset"/>
+        <CheckBox x:Name="NoWeapons" Content="No Weapons" HorizontalAlignment="Left" Margin="251,13,0,0" VerticalAlignment="Top" Unchecked="CheckBox_Checked" Checked="CheckBox_Checked"/>
+        <Slider x:Name="timesli" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top" Width="428" ValueChanged="Slider_ValueChanged" Maximum="250" Value="133"/>
+        <Slider x:Name="timesli_Copy" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Width="428" ValueChanged="Slider2_ValueChanged" Maximum="100" Value="3"/>
 
     </Grid>
 </Window>
