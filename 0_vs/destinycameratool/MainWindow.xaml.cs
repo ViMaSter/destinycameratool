@@ -20,7 +20,7 @@ using System.Xml.Linq;
 
 using System.Runtime.InteropServices;
 
-namespace ps4remotehack
+namespace destinycameratool
 {
 #region PS4 Remoteplay memory
     // PS4 Input Memory allocated for:

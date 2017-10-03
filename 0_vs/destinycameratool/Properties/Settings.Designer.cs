@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ps4remotehack.Properties
+namespace destinycameratool.Properties
 {
 
 
