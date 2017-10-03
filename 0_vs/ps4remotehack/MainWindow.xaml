@@ -5,27 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ps4remotehack"
         mc:Ignorable="d"
-        Title="MainWindow" Height="357.733" Width="507.642">
+        Title="MainWindow" Height="400" Width="800"
+        Closed="Window_Closed">
     <Grid>
-        <Button x:Name="ButtonX" Content="Do X" HorizontalAlignment="Left" Margin="42,63,0,0" VerticalAlignment="Top" Width="75" MouseDown="ButtonX_Down" MouseUp="ButtonX_Up" RenderTransformOrigin="0.961,0.58"/>
-        <Button Content="Do Square" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="75" MouseDown="Square_Down" MouseUp="Square_Up"/>
-        <Button Content="Do Triangle" HorizontalAlignment="Left" Margin="42,13,0,0" VerticalAlignment="Top" Width="75" MouseDown="Triangle_Down" MouseUp="Triangle_Up"/>
+
+        <CheckBox x:Name="EnableTool" Content="" HorizontalAlignment="Left" Margin="127,16,0,0" VerticalAlignment="Top" Unchecked="EnableTool_Checked" Checked="EnableTool_Checked"/>
+        <Label Content="Steal controller input" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Height="24"/>
+
+
+        <CheckBox x:Name="NoWeapons" Content="" HorizontalAlignment="Left" Margin="127,66,0,0" VerticalAlignment="Top" Unchecked="HideWeapon_Checked" Checked="HideWeapon_Checked"/>
+        <Label Content="Hide weapon&#xA;" HorizontalAlignment="Left" Margin="0,59,0,0" VerticalAlignment="Top" Height="24"/>
+
         
-        <Label Content="LX&#xA;" HorizontalAlignment="Left" Margin="0,85,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Strafe left/right&#xA;" HorizontalAlignment="Left" Margin="0,82,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider x:Name="Slider_LX" HorizontalAlignment="Left" Margin="124,88,0,0"  VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=LX, Mode=TwoWay}" MouseDoubleClick="LX_Reset"/>
+        <TextBox x:Name="Text_LX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,86,0,0"  TextWrapping="Wrap" Text="{Binding Path=LX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LX_Reset"/>
 
-        <Label Content="LY&#xA;" HorizontalAlignment="Left" Margin="452,-4,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Forwards/Backwards" HorizontalAlignment="Left" Margin="0,109,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider x:Name="Slider_LY" HorizontalAlignment="Left" Margin="124,115,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=LY, Mode=TwoWay}" MouseDoubleClick="LY_Reset"/>
+        <TextBox x:Name="Text_LY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,114,0,0" TextWrapping="Wrap" Text="{Binding Path=LY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LY_Reset"/>
 
-        <Label Content="RX&#xA;" HorizontalAlignment="Left" Margin="0,114,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Look left/right&#xA;" HorizontalAlignment="Left" Margin="0,166,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider x:Name="Slider_RX" HorizontalAlignment="Left" Margin="124,172,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=RX, Mode=TwoWay}" MouseDoubleClick="RX_Reset"/>
+        <TextBox x:Name="Text_RX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,169,0,0" TextWrapping="Wrap" Text="{Binding Path=RX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RX_Reset"/>
 
-        <Label Content="RY&#xA;" HorizontalAlignment="Left" Margin="474,-4,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Look up/down&#xA;" HorizontalAlignment="Left" Margin="0,193,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider x:Name="Slider_RY" HorizontalAlignment="Left" Margin="124,199,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=RY, Mode=TwoWay}" MouseDoubleClick="RY_Reset"/>
+        <TextBox x:Name="Text_RY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,197,0,0" TextWrapping="Wrap" Text="{Binding Path=RY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RY_Reset"/>
 
-        <Slider x:Name="LX" HorizontalAlignment="Left" Margin="23,88,0,0" VerticalAlignment="Top" Width="415" Maximum="255" Value="128" ValueChanged="LX_ValueChanged" MouseDoubleClick="LX_Reset"/>
-        <Slider x:Name="RX" HorizontalAlignment="Left" Margin="24,120,0,0" VerticalAlignment="Top" Width="414" Maximum="255" Value="128" ValueChanged="RX_ValueChanged" MouseDoubleClick="RX_Reset"/>
-        <Slider x:Name="LY" HorizontalAlignment="Left" Margin="453,18,0,0" VerticalAlignment="Top" Width="16" RenderTransformOrigin="0.5,0.5" Orientation="Vertical" Height="299" Maximum="255" Value="128" ValueChanged="LY_ValueChanged" MouseDoubleClick="LY_Reset"/>
-        <Slider x:Name="RY" HorizontalAlignment="Left" Margin="474,18,0,0" VerticalAlignment="Top" Width="16" RenderTransformOrigin="0.5,0.5" Orientation="Vertical" Height="299" Maximum="255" Value="128" ValueChanged="RY_ValueChanged" MouseDoubleClick="RY_Reset"/>
-        <CheckBox x:Name="NoWeapons" Content="No Weapons" HorizontalAlignment="Left" Margin="251,13,0,0" VerticalAlignment="Top" Unchecked="CheckBox_Checked" Checked="CheckBox_Checked"/>
-        <Slider x:Name="timesli" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top" Width="428" ValueChanged="Slider_ValueChanged" Maximum="250" Value="133"/>
-        <Slider x:Name="timesli_Copy" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Width="428" ValueChanged="Slider2_ValueChanged" Maximum="100" Value="3"/>
 
+        <Slider x:Name="pressOffset"   HorizontalAlignment="Left" Margin="10,321,0,0" VerticalAlignment="Top" Width="775" Value="{Binding Path=PressOffset, Mode=TwoWay}" Maximum="250"/>
+        <Slider x:Name="releaseOffset" HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top" Width="775" Value="{Binding Path=ReleaseOffset, Mode=TwoWay}" Maximum="100"/>
     </Grid>
 </Window>
