@@ -181,18 +181,38 @@ namespace ps4remotehack
             }
         }
 
+        private bool _ToolActive = false;
+        public bool ToolActive
+        {
+            get
+            {
+                return _ToolActive;
+            }
+            set
+            {
+                if (_ToolActive != value)
+                {
+                    _ToolActive = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-#endregion
+    #endregion
 
+#region Native methods
     namespace Import
     {
         public class Helper
         {
+            public const int NOP = 0x90;
+
             public const int PROCESS_VM_READ = 0x0010;
             public const int PROCESS_VM_WRITE = 0x0020;
             public const int PROCESS_VM_OPERATION = 0x0008;
@@ -207,6 +227,7 @@ namespace ps4remotehack
             public static extern bool ReadProcessMemory(int hProcess, int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
         }
     }
+#endregion
 
     public partial class MainWindow : Window
     {
@@ -222,9 +243,21 @@ namespace ps4remotehack
 
         public struct ReplaceableAdress
         {
+            /// <summary>
+            /// Absolute adress or relative offset to a value we want to copy and later override
+            /// </summary>
             public int adress;
+            /// <summary>
+            /// Denotes whether or not ::adress is a relative or absolute adress
+            /// </summary>
             public bool relativeToDLL;
+            /// <summary>
+            /// How many bytes we read or write
+            /// </summary>
             public int bytesRequired;
+            /// <summary>
+            /// Bytes we read from the original codebase
+            /// </summary>
             public byte[] bytes;
 
             public ReplaceableAdress(int _adress, bool _relativeToDLL, int _bytesRequired)
@@ -237,8 +270,14 @@ namespace ps4remotehack
         }
 
         /// <summary>
-        /// Key: Adresses containing the instructions that copy the controller input into a buffer sent to the PS4.
-        /// Value: Relative to RpCtrlWrapper.dll?
+        /// List of adresses we need to replace
+        /// 
+        /// These adresses contain instructions that copy the gamepad input
+        /// into a buffer that is sent to the PS4. We need to replace these with
+        /// NOP-instructions so we can freely modify the buffer on our own.
+        /// 
+        /// We copy the instructions at first so we can replace it if needed, but also
+        /// restore it if we want to return control to the user.
         /// </summary>
         List<ReplaceableAdress> writeToAdresses = new List<ReplaceableAdress>{
             new ReplaceableAdress(0x0020DDBB, true, 5),
@@ -252,6 +291,9 @@ namespace ps4remotehack
 
         /// <summary>
         /// Key: Base adresses for all buffers sent to the PS4 over the network.
+        /// This is an incredibly broad approach, as we simply replce all the buffers and don't
+        /// care about why they are all there in the first place.
+        /// (Someone feel free to enlighten me here.)
         /// </summary>
         List<int> offsets = new List<int> {
             0x002EBB94,
@@ -319,10 +361,16 @@ namespace ps4remotehack
             0x002EDC84,
             0x002EDD0C
         };
+        /// <summary>
+        /// We convert the relative adresses to absolute adresses at runtime, but only need to do this once.
+        /// </summary>
         List<int> convertedOffsets = new List<int>();
 
-        const int noOp = 0x90;
-
+        /// <summary>
+        /// This tool offers two different setups; one used when the triangle-button is auto-pressed
+        /// and one if it's not.
+        /// </summary>
+        /// <returns></returns>
         ref PS4Input GetState()
         {
             if (this.NoWeapons == null || this.NoWeapons.IsChecked == null)
@@ -345,12 +393,10 @@ namespace ps4remotehack
             this.DataContext = windowMapping;
 
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Send);
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
 
             regularState = new PS4Input();
             autoMoveState = new PS4Input();
-            autoMoveState.RSX = 96;
-            autoMoveState.RSY = 146;
 
             this.windowMapping.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
             {
@@ -364,67 +410,11 @@ namespace ps4remotehack
 
                 dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)this.windowMapping.PressOffset);
 
-                DoMagic(GetState());
+                WriteStateToMemory(GetState());
             };
 
-            InitializeComponent();
             InitialSetup();
-        }
-
-        enum WriteDirective
-        {
-            RestoreGamepad,
-            TakeControl
-        }
-
-        void ReadMemory()
-        {
-            foreach (ReplaceableAdress replaceableAdress in writeToAdresses)
-            {
-                int bytesRead = -1;
-                int adressToUse = replaceableAdress.adress;
-                if (replaceableAdress.relativeToDLL)
-                {
-                    adressToUse += rpCtrlWrapperBaseAdress.ToInt32();
-                }
-
-                Import.Helper.ReadProcessMemory((int)remotePlayProcessHandle, adressToUse, replaceableAdress.bytes, replaceableAdress.bytesRequired, ref bytesRead);
-            }
-        }
-
-        void OverrideMemory(WriteDirective directive)
-        {
-            // override all write-to adresses
-            foreach (ReplaceableAdress replaceableAdress in writeToAdresses)
-            {
-                int bytesWritten = -1;
-                byte[] byteArray;
-                if (directive == WriteDirective.RestoreGamepad)
-                {
-                    if (replaceableAdress.bytes[0] == 0x00)
-                    {
-                        // if don't have bytes we could write, skip this memory location
-                        continue;
-                    }
-                    byteArray = replaceableAdress.bytes;
-                }
-                else
-                {
-                    byteArray = new byte[replaceableAdress.bytesRequired];
-                    for (int i = 0; i < replaceableAdress.bytesRequired; i++)
-                    {
-                        byteArray[i] = noOp;
-                    }
-                }
-
-                int adressToUse = replaceableAdress.adress;
-                if (replaceableAdress.relativeToDLL)
-                {
-                    adressToUse += rpCtrlWrapperBaseAdress.ToInt32();
-                }
-
-                Import.Helper.WriteProcessMemory((int)remotePlayProcessHandle, adressToUse, byteArray, replaceableAdress.bytesRequired, ref bytesWritten);
-            }
+            InitializeComponent();
         }
 
         void InitialSetup()
@@ -444,7 +434,69 @@ namespace ps4remotehack
             ReadMemory();
         }
 
-        public void DoMagic(PS4Input state)
+#region Take/grant control from gamepad
+        void ReadMemory()
+        {
+            foreach (ReplaceableAdress replaceableAdress in writeToAdresses)
+            {
+                int bytesRead = -1;
+                int adressToUse = replaceableAdress.adress;
+                if (replaceableAdress.relativeToDLL)
+                {
+                    adressToUse += rpCtrlWrapperBaseAdress.ToInt32();
+                }
+
+                Import.Helper.ReadProcessMemory((int)remotePlayProcessHandle, adressToUse, replaceableAdress.bytes, replaceableAdress.bytesRequired, ref bytesRead);
+            }
+        }
+
+        /// <summary>
+        /// We can either restore the gamepad functionality once we
+        /// overwrote it or let the tool take control of the input.
+        /// </summary>
+        enum WriteDirective
+        {
+            RestoreGamepad,
+            TakeControl
+        }
+
+        void OverrideMemory(WriteDirective directive)
+        {
+            foreach (ReplaceableAdress replaceableAdress in writeToAdresses)
+            {
+                int bytesWritten = -1;
+                byte[] byteArray;
+                if (directive == WriteDirective.RestoreGamepad)
+                {
+                    if (replaceableAdress.bytes[0] == 0x00)
+                    {
+                        // if don't have bytes we could write, skip this memory location
+                        continue;
+                    }
+                    byteArray = replaceableAdress.bytes;
+                }
+                else
+                {
+                    byteArray = new byte[replaceableAdress.bytesRequired];
+                    for (int i = 0; i < replaceableAdress.bytesRequired; i++)
+                    {
+                        byteArray[i] = Import.Helper.NOP;
+                    }
+                }
+
+                int adressToUse = replaceableAdress.adress;
+                if (replaceableAdress.relativeToDLL)
+                {
+                    adressToUse += rpCtrlWrapperBaseAdress.ToInt32();
+                }
+
+                Import.Helper.WriteProcessMemory((int)remotePlayProcessHandle, adressToUse, byteArray, replaceableAdress.bytesRequired, ref bytesWritten);
+            }
+        }
+#endregion
+
+#region Forward tool-input to PS4
+        public void WriteStateToMemory(PS4Input state)
         {
             if (remotePlayProcess == null || remotePlayProcessHandle == new IntPtr())
             {
@@ -462,6 +514,18 @@ namespace ps4remotehack
             Console.ReadLine();
         }
 
+        private async void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            GetState().Buttons |= PS4Input.Triangle;
+            WriteStateToMemory(GetState());
+            await Task.Delay(windowMapping.ReleaseOffset);
+
+            GetState().Buttons &= ~PS4Input.Triangle;
+            WriteStateToMemory(GetState());
+        }
+#endregion
+
+#region WPF related
         private void NumberValidation(object sender, TextCompositionEventArgs e)
         {
             int result = -1;
@@ -520,7 +584,7 @@ namespace ps4remotehack
                 this.windowMapping.RX = GetState().RSX;
                 this.windowMapping.LY = GetState().LSY;
                 this.windowMapping.RY = GetState().RSY;
-                DoMagic(GetState());
+                WriteStateToMemory(GetState());
 
                 dispatcherTimer.Start();
             }
@@ -530,25 +594,16 @@ namespace ps4remotehack
                 this.windowMapping.RX = GetState().RSX;
                 this.windowMapping.LY = GetState().LSY;
                 this.windowMapping.RY = GetState().RSY;
-                DoMagic(GetState());
+                WriteStateToMemory(GetState());
 
                 dispatcherTimer.Stop();
             }
-        }
-
-        private async void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            GetState().Buttons |= PS4Input.Triangle;
-            DoMagic(GetState());
-            await Task.Delay(windowMapping.ReleaseOffset);
-
-            GetState().Buttons &= ~PS4Input.Triangle;
-            DoMagic(GetState());
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)windowMapping.PressOffset);
         }
+#endregion
     }
 }

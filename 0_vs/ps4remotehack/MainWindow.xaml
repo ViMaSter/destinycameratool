@@ -9,32 +9,37 @@
         Closed="Window_Closed">
     <Grid>
 
-        <CheckBox x:Name="EnableTool" Content="" HorizontalAlignment="Left" Margin="127,16,0,0" VerticalAlignment="Top" Unchecked="EnableTool_Checked" Checked="EnableTool_Checked"/>
+        <CheckBox x:Name="EnableTool" Content="" HorizontalAlignment="Left" Margin="132,15,0,0" VerticalAlignment="Top" Unchecked="EnableTool_Checked" Checked="EnableTool_Checked" IsChecked="{Binding Path=ToolActive, Mode=TwoWay}"/>
         <Label Content="Steal controller input" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" Height="24"/>
 
 
-        <CheckBox x:Name="NoWeapons" Content="" HorizontalAlignment="Left" Margin="127,66,0,0" VerticalAlignment="Top" Unchecked="HideWeapon_Checked" Checked="HideWeapon_Checked"/>
-        <Label Content="Hide weapon&#xA;" HorizontalAlignment="Left" Margin="0,59,0,0" VerticalAlignment="Top" Height="24"/>
+        <CheckBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}" x:Name="NoWeapons" Content="" HorizontalAlignment="Left" Margin="132,58,0,0" VerticalAlignment="Top" Unchecked="HideWeapon_Checked" Checked="HideWeapon_Checked"/>
+        <Label Content="Hide weapon&#xA;" HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top" Height="24"/>
 
-        
+
         <Label Content="Strafe left/right&#xA;" HorizontalAlignment="Left" Margin="0,82,0,0" VerticalAlignment="Top" Height="24"/>
-        <Slider x:Name="Slider_LX" HorizontalAlignment="Left" Margin="124,88,0,0"  VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=LX, Mode=TwoWay}" MouseDoubleClick="LX_Reset"/>
-        <TextBox x:Name="Text_LX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,86,0,0"  TextWrapping="Wrap" Text="{Binding Path=LX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LX_Reset"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Slider_LX" HorizontalAlignment="Left" Margin="127,88,0,0"  VerticalAlignment="Top" Width="553" Maximum="255" Value="{Binding Path=LX, Mode=TwoWay}" MouseDoubleClick="LX_Reset"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_LX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,86,0,0"  TextWrapping="Wrap" Text="{Binding Path=LX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LX_Reset"/>
 
         <Label Content="Forwards/Backwards" HorizontalAlignment="Left" Margin="0,109,0,0" VerticalAlignment="Top" Height="24"/>
-        <Slider x:Name="Slider_LY" HorizontalAlignment="Left" Margin="124,115,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=LY, Mode=TwoWay}" MouseDoubleClick="LY_Reset"/>
-        <TextBox x:Name="Text_LY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,114,0,0" TextWrapping="Wrap" Text="{Binding Path=LY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LY_Reset"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Slider_LY" HorizontalAlignment="Left" Margin="127,115,0,0" VerticalAlignment="Top" Width="553" Maximum="255" Value="{Binding Path=LY, Mode=TwoWay}" MouseDoubleClick="LY_Reset"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_LY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,114,0,0" TextWrapping="Wrap" Text="{Binding Path=LY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="LY_Reset"/>
 
         <Label Content="Look left/right&#xA;" HorizontalAlignment="Left" Margin="0,166,0,0" VerticalAlignment="Top" Height="24"/>
-        <Slider x:Name="Slider_RX" HorizontalAlignment="Left" Margin="124,172,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=RX, Mode=TwoWay}" MouseDoubleClick="RX_Reset"/>
-        <TextBox x:Name="Text_RX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,169,0,0" TextWrapping="Wrap" Text="{Binding Path=RX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RX_Reset"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Slider_RX" HorizontalAlignment="Left" Margin="127,172,0,0" VerticalAlignment="Top" Width="553" Maximum="255" Value="{Binding Path=RX, Mode=TwoWay}" MouseDoubleClick="RX_Reset"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_RX" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,169,0,0" TextWrapping="Wrap" Text="{Binding Path=RX, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RX_Reset"/>
 
         <Label Content="Look up/down&#xA;" HorizontalAlignment="Left" Margin="0,193,0,0" VerticalAlignment="Top" Height="24"/>
-        <Slider x:Name="Slider_RY" HorizontalAlignment="Left" Margin="124,199,0,0" VerticalAlignment="Top" Width="556" Maximum="255" Value="{Binding Path=RY, Mode=TwoWay}" MouseDoubleClick="RY_Reset"/>
-        <TextBox x:Name="Text_RY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,197,0,0" TextWrapping="Wrap" Text="{Binding Path=RY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RY_Reset"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Slider_RY" HorizontalAlignment="Left" Margin="127,199,0,0" VerticalAlignment="Top" Width="553" Maximum="255" Value="{Binding Path=RY, Mode=TwoWay}" MouseDoubleClick="RY_Reset"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_RY" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,197,0,0" TextWrapping="Wrap" Text="{Binding Path=RY, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RY_Reset"/>
 
 
-        <Slider x:Name="pressOffset"   HorizontalAlignment="Left" Margin="10,321,0,0" VerticalAlignment="Top" Width="775" Value="{Binding Path=PressOffset, Mode=TwoWay}" Maximum="250"/>
-        <Slider x:Name="releaseOffset" HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top" Width="775" Value="{Binding Path=ReleaseOffset, Mode=TwoWay}" Maximum="100"/>
+        <Label Content="Advanced:" HorizontalAlignment="Left" Margin="0,273,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Button press delay (ms):" HorizontalAlignment="Left" Margin="0,294,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}" x:Name="Slider_pressOffset"   HorizontalAlignment="Left" Margin="165,299,0,0" VerticalAlignment="Top" Width="515" Value="{Binding Path=PressOffset, Mode=TwoWay}" Maximum="250"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_pressOffset"   PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,297,0,0" TextWrapping="Wrap" Text="{Binding Path=PressOffset, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RX_Reset"/>
+        <Label Content="Button release delay (ms):" HorizontalAlignment="Left" Margin="0,321,0,0" VerticalAlignment="Top" Height="24"/>
+        <Slider IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}" x:Name="Slider_releaseOffset" HorizontalAlignment="Left" Margin="165,327,0,0" VerticalAlignment="Top" Width="515" Value="{Binding Path=ReleaseOffset, Mode=TwoWay}" Maximum="100"/>
+        <TextBox IsEnabled="{Binding Path=ToolActive, Mode=TwoWay}"  x:Name="Text_releaseOffset" PreviewTextInput="NumberValidation" HorizontalAlignment="Left" Height="23" Margin="685,325,0,0" TextWrapping="Wrap" Text="{Binding Path=ReleaseOffset, Mode=TwoWay}" VerticalAlignment="Top" Width="100" TextAlignment="Center" MouseDoubleClick="RX_Reset"/>
     </Grid>
 </Window>
